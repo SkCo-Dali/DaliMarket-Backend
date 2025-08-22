@@ -30,3 +30,16 @@ class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
         except Exception as e:
             logging.error(f"Error al consultar Details: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Details.")
+        
+    def get_by_opportunity_id(self, opportunity_id: str) -> Dict:
+        try:
+            query = "SELECT * FROM c WHERE c.OpportunityId=@id"
+            parameters = [{"name": "@id", "value": opportunity_id}]
+            items = list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
+            if items:
+                return items[0]
+            else:
+                return None
+        except Exception as e:
+            logging.error(f"Error al consultar Detail por ID: {str(e)}")
+            raise ConnectionErrorException("No se pudo consultar el Detail por ID.")

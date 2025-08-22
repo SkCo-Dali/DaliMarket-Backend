@@ -19,3 +19,8 @@ def create_lead(lead: dict, service: OpportunityLeadsService = Depends(get_leads
 @router.get("/")
 def list_leads(service: OpportunityLeadsService = Depends(get_leads_service)):
     return service.list_leads()
+
+@router.get("/{agte_id}")
+def get_leads_by_agte_id(agte_id: str, service: OpportunityLeadsService = Depends(get_leads_service)):
+    agte_id = int(agte_id) if agte_id.isdigit() else agte_id
+    return service.get_leads_by_agte_id(agte_id)

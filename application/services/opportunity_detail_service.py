@@ -11,3 +11,6 @@ class OpportunityDetailService:
 
     def list_details(self) -> List[Dict]:
         return self.repository.get_all()
+    
+    def get_detail_by_opportunity_id(self, opportunity_id: str) -> Dict:
+        return self.repository.get_by_opportunity_id(opportunity_id)

@@ -10,3 +10,7 @@ class OpportunityDetailRepositoryPort(ABC):
     @abstractmethod
     def get_all(self) -> List[Dict]:
         pass
+
+    @abstractmethod
+    def get_by_opportunity_id(self, opportunity_id: str) -> Dict:
+        pass

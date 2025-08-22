@@ -11,3 +11,6 @@ class OpportunityLeadsService:
 
     def list_leads(self) -> List[Dict]:
         return self.repository.get_all()
+    
+    def get_leads_by_agte_id(self, agte_id: str) -> List[Dict]:
+        return self.repository.get_by_agte_id(agte_id)

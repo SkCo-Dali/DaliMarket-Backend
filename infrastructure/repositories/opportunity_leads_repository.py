@@ -30,3 +30,12 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
         except Exception as e:
             logging.error(f"Error al consultar Leads: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Leads.")
+        
+    def get_by_agte_id(self, agte_id: str) -> List[Dict]:
+        try:
+            query = "SELECT * FROM c WHERE c.IdAgte=@agte_id"
+            parameters = [{"name": "@agte_id", "value": agte_id}]
+            return list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
+        except Exception as e:
+            logging.error(f"Error al consultar Leads por AgteId: {str(e)}")
+            raise ConnectionErrorException("No se pudieron consultar los Leads por AgteId.")

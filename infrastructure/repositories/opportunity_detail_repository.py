@@ -1,3 +1,4 @@
+# infrastructure/repositories/opportunity_detail_repository.py
 import uuid
 import logging
 from typing import Dict, List

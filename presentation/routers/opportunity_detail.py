@@ -1,3 +1,4 @@
+# presentation/routers/opportunity_detail.py
 from fastapi import APIRouter, Depends
 from application.services.opportunity_leads_service import OpportunityLeadsService
 from infrastructure.adapters.cosmos import get_cosmos_session, CosmosSession

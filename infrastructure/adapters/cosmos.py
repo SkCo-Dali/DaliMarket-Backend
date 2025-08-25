@@ -1,3 +1,4 @@
+# infrastructure/adapters/cosmos.py
 import logging
 from azure.cosmos import CosmosClient, PartitionKey
 from core.settings import settings

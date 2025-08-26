@@ -1,11 +1,11 @@
 # infrastructure/repositories/opportunity_detail_repository.py
-import uuid
 import logging
-from typing import Dict, List
+from typing import List, Optional
 from core.settings import settings
 from core.exceptions import ConnectionErrorException
 from infrastructure.adapters.cosmos import CosmosSession
 from application.ports.opportunity_detail_repository import OpportunityDetailRepositoryPort
+from domain.models.OpportunityDetail import OpportunityDetail
 
 
 class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
@@ -15,32 +15,39 @@ class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
             settings.COSMOS_OPPORTUNITY_DETAIL_PARTITION_KEY
         )
 
-    def insert(self, detail: Dict) -> Dict:
-        try:
-            if "id" not in detail:
-                detail["id"] = str(uuid.uuid4())
-            return self.container.upsert_item(detail)
-        except Exception as e:
-            logging.error(f"Error al insertar Detail: {str(e)}")
-            raise ConnectionErrorException("No se pudo insertar el Detail en Cosmos.")
+    def _map_to_domain(self, doc: dict) -> OpportunityDetail:
+        """Convierte un documento de Cosmos en un modelo de dominio."""
+        return OpportunityDetail(
+            OpportunityId=doc["OpportunityId"],
+            Title=doc["Title"],
+            Subtitle=doc.get("Subtitle"),
+            Description=doc.get("Description"),
+            EmailTemplate=doc.get("EmailTemplate"),
+            DaliPrompt=doc.get("DaliPrompt"),
+            Categories=doc.get("Categories", []),
+        )
 
-    def get_all(self) -> List[Dict]:
+    def get_all(self) -> List[OpportunityDetail]:
         try:
             query = "SELECT * FROM c"
-            return list(self.container.query_items(query=query, enable_cross_partition_query=True))
+            items = list(self.container.query_items(query=query, enable_cross_partition_query=True))
+            return [self._map_to_domain(doc) for doc in items]
         except Exception as e:
             logging.error(f"Error al consultar Details: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Details.")
-        
-    def get_by_opportunity_id(self, opportunity_id: str) -> Dict:
+
+    def get_by_opportunity_id(self, opportunity_id: str) -> Optional[OpportunityDetail]:
         try:
             query = "SELECT * FROM c WHERE c.OpportunityId=@id"
             parameters = [{"name": "@id", "value": opportunity_id}]
-            items = list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
+            items = list(self.container.query_items(
+                query=query,
+                parameters=parameters,
+                enable_cross_partition_query=True
+            ))
             if items:
-                return items[0]
-            else:
-                return None
+                return self._map_to_domain(items[0])
+            return None
         except Exception as e:
             logging.error(f"Error al consultar Detail por ID: {str(e)}")
             raise ConnectionErrorException("No se pudo consultar el Detail por ID.")

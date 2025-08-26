@@ -1,7 +1,7 @@
 # application/services/opportunity_leads_service.py
 from typing import Dict, List
-from application.ports.opportunity_leads_repository import OpportunityLeadsRepositoryPort
-from domain.models.OpportunityLeads import OpportunityLeads
+from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
+from domain.models.opportunity_leads import OpportunityLeads
 
 
 class OpportunityLeadsService:

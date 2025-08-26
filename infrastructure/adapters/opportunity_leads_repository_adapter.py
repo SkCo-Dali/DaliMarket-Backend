@@ -1,11 +1,11 @@
-# infrastructure/repositories/opportunity_leads_repository.py
+# infrastructure/adapters/opportunity_leads_repository.py
 import logging
 from typing import List
 from core.settings import settings
 from core.exceptions import ConnectionErrorException
 from infrastructure.adapters.cosmos import CosmosSession
-from application.ports.opportunity_leads_repository import OpportunityLeadsRepositoryPort
-from domain.models.OpportunityLeads import OpportunityLeads
+from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
+from domain.models.opportunity_leads import OpportunityLeads
 from domain.models.Lead import Lead
 
 class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
@@ -40,7 +40,7 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
             logging.error(f"Error al consultar Leads: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Leads.")
 
-    def get_by_agte_id(self, agte_id: str) -> List[OpportunityLeads]:
+    def get_by_agte_id(self, agte_id: int) -> List[OpportunityLeads]:
         try:
             query = "SELECT * FROM c WHERE c.IdAgte=@agte_id"
             parameters = [{"name": "@agte_id", "value": agte_id}]

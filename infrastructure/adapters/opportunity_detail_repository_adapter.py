@@ -1,11 +1,11 @@
-# infrastructure/repositories/opportunity_detail_repository.py
+# infrastructure/adapters/opportunity_detail_repository.py
 import logging
 from typing import List, Optional
 from core.settings import settings
 from core.exceptions import ConnectionErrorException
 from infrastructure.adapters.cosmos import CosmosSession
-from application.ports.opportunity_detail_repository import OpportunityDetailRepositoryPort
-from domain.models.OpportunityDetail import OpportunityDetail
+from application.ports.opportunity_detail_repository_port import OpportunityDetailRepositoryPort
+from domain.models.opportunity_detail import OpportunityDetail
 
 
 class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
@@ -36,7 +36,7 @@ class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
             logging.error(f"Error al consultar Details: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Details.")
 
-    def get_by_opportunity_id(self, opportunity_id: str) -> Optional[OpportunityDetail]:
+    def get_by_opportunity_id(self, opportunity_id: int) -> Optional[OpportunityDetail]:
         try:
             query = "SELECT * FROM c WHERE c.OpportunityId=@id"
             parameters = [{"name": "@id", "value": opportunity_id}]

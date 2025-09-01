@@ -1,15 +1,15 @@
-# infrastructure/adapters/opportunity_leads_repository.py
+# infrastructure/repositories/opportunity_leads_repository.py
 import logging
-from typing import List
+from typing import List, Optional
 from core.settings import settings
 from core.exceptions import ConnectionErrorException
-from infrastructure.adapters.cosmos import CosmosSession
+from infrastructure.adapters.cosmos_adapter import CosmosAdapter
 from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
 from domain.models.opportunity_leads import OpportunityLeads
-from domain.models.Lead import Lead
+from domain.models.opportunity_lead import OpportunityLead
 
 class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
-    def __init__(self, session: CosmosSession):
+    def __init__(self, session: CosmosAdapter):
         self.container = session.get_container(
             settings.COSMOS_OPPORTUNITY_LEADS_CONTAINER,
             settings.COSMOS_OPPORTUNITY_LEADS_PARTITION_KEY
@@ -17,7 +17,7 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
 
     def _map_to_domain(self, doc: dict) -> OpportunityLeads:
         """Convierte un documento de Cosmos en un modelo de dominio."""
-        leads = [Lead(**l["lead"]) for l in doc.get("leads", [])]
+        leads = [OpportunityLead(**l["lead"]) for l in doc.get("leads", [])]
 
         return OpportunityLeads(
             OpportunityId=doc["OpportunityId"],
@@ -49,3 +49,23 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
         except Exception as e:
             logging.error(f"Error al consultar Leads por AgteId: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Leads por AgteId.")
+        
+    def get_by_opportunity_id_and_agte(self, opportunity_id: int, id_agte: int) -> Optional[OpportunityLeads]:
+        query = """
+        SELECT * FROM c WHERE c.OpportunityId = @opportunity_id AND c.IdAgte = @id_agte
+        """
+        params = [
+            {"name": "@opportunity_id", "value": opportunity_id},
+            {"name": "@id_agte", "value": id_agte},
+        ]
+
+        items = list(self.container.query_items(
+            query=query,
+            parameters=params,
+            enable_cross_partition_query=True
+        ))
+
+        if not items:
+            return None
+
+        return OpportunityLeads(**items[0])

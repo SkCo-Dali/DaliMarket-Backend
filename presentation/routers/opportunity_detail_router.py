@@ -1,16 +1,14 @@
 # presentation/routers/opportunity_detail_router.py
 from fastapi import APIRouter, Depends
-from application.services.opportunity_leads_service import OpportunityLeadsService
 from domain.models.opportunity_detail import OpportunityDetail
-from infrastructure.adapters.cosmos import get_cosmos_session, CosmosSession
-from infrastructure.adapters.opportunity_detail_repository_adapter import OpportunityDetailRepository
+from infrastructure.adapters.cosmos_adapter import get_cosmos_session, CosmosAdapter
+from infrastructure.repositories.opportunity_detail_repository import OpportunityDetailRepository
 from application.services.opportunity_detail_service import OpportunityDetailService
-from infrastructure.adapters.opportunity_leads_repository_adapter import OpportunityLeadsRepository
 
 router = APIRouter(prefix="/opportunity-detail", tags=["Opportunity Details"])
 
 
-def get_opportunity_detail_service(session: CosmosSession = Depends(get_cosmos_session)):
+def get_opportunity_detail_service(session: CosmosAdapter = Depends(get_cosmos_session)):
     repo = OpportunityDetailRepository(session)
     return OpportunityDetailService(repo)
 

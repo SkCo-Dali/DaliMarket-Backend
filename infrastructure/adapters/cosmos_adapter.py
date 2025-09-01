@@ -5,7 +5,7 @@ from core.settings import settings
 from core.exceptions import ConnectionErrorException
 
 
-class CosmosSession:
+class CosmosAdapter:
     def __init__(self):
         try:
             self.client = CosmosClient(settings.COSMOS_URI, credential=settings.COSMOS_KEY)
@@ -30,7 +30,7 @@ class CosmosSession:
 
 
 def get_cosmos_session():
-    db = CosmosSession()
+    db = CosmosAdapter()
     try:
         yield db
     finally:

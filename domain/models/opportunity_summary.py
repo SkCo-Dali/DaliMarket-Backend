@@ -1,7 +1,7 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-from domain.models.Lead import Lead
+from domain.models.opportunity_lead import OpportunityLead
 
 
 class OpportunitySummary(BaseModel):

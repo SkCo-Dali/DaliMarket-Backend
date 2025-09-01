@@ -23,7 +23,7 @@ def get_lead_service(
     # Repositorio para guardar Leads en SQL Server
     lead_repo = LeadRepository(sql)
 
-    return LeadService(opportunity_leads_repo, lead_repo)
+    return LeadService(lead_repo, opportunity_leads_repo)
 
 
 @router.post("/from-opportunity", response_model=List[Lead])

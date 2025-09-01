@@ -68,4 +68,4 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
         if not items:
             return None
 
-        return OpportunityLeads(**items[0])
+        return self._map_to_domain(items[0])

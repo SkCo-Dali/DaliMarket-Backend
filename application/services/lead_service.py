@@ -1,65 +1,48 @@
-# application/services/lead_service.py
-from typing import List
-from domain.models.opportunity_leads import OpportunityLeads
+import logging
+from uuid import uuid4
 from domain.models.lead import Lead
-from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
-from application.ports.lead_repository_port import LeadRepositoryPort
-
 
 class LeadService:
-    def __init__(
-        self,
-        opportunity_leads_repo: OpportunityLeadsRepositoryPort,
-        lead_repo: LeadRepositoryPort
-    ):
-        self.opportunity_leads_repo = opportunity_leads_repo
+    def __init__(self, lead_repo, opportunity_leads_repo):
         self.lead_repo = lead_repo
+        self.opportunity_leads_repo = opportunity_leads_repo
 
-    def create_leads_from_opportunity(self, opportunity_id: int, id_agte: int, created_by: str) -> List[Lead]:
-        """
-        Dado un opportunity_id y un id_agte, recupera los OpportunityLeads 
-        y crea leads en SQL Server.
-        """
-        # 1. Obtener los opportunity leads desde Cosmos (u otro origen)
-        opportunity: OpportunityLeads = self.opportunity_leads_repo.get_by_opportunity_id_and_agte(
-            opportunity_id, id_agte
-        )
+    def create_leads_from_opportunity(self, opportunity_id: int, id_agte: int, created_by: str):
+        opportunity = self.opportunity_leads_repo.get_by_opportunity_id_and_agte(opportunity_id, id_agte)
 
-        if not opportunity:
-            raise ValueError(f"No se encontró oportunidad con id={opportunity_id} y idAgte={id_agte}")
+        leads_created = []
 
-        created_leads: List[Lead] = []
-
-        # 2. Mapear cada OpportunityLead a LeadInput
         for opp_lead in opportunity.leads:
             lead = Lead(
                 CreatedBy=created_by,
                 name=f"{opp_lead.nombres} {opp_lead.apellidos}",
                 email=opp_lead.emailCliente,
-                phone=opp_lead.telefonoCliente or opp_lead.celularCliente,
+                phone=opp_lead.celularCliente or opp_lead.telefonoCliente,
                 documentNumber=opp_lead.nroDocum,
-                company=None,  # no viene de OpportunityLead
-                source="Oportunidad",  # puedes setear el origen fijo o dinámico
+                company=None,
+                source="Market Dali",
                 campaign=None,
-                product=None,
-                stage="Nuevo",  # estado inicial fijo
-                priority="Media",  # prioridad por defecto
+                product=[],
+                stage="Nuevo",
+                priority="Media",
                 value=0,
-                assignedTo=created_by,  # asignado al vendedor
+                assignedTo=created_by,
                 nextFollowUp=None,
-                notes=f"Generado desde oportunidad {opportunity.OpportunityId}",
-                tags=None,
+                notes=None,
+                tags=[],
                 DocumentType=opp_lead.tipoDocum,
-                SelectedPortfolios=None,
+                SelectedPortfolios=[],
                 CampaignOwnerName=None,
                 Age=None,
                 Gender=None,
                 PreferredContactChannel=None,
-                AdditionalInfo=opp_lead.extraDetails
+                AdditionalInfo=opp_lead.extraDetails,
             )
 
-            # 3. Guardar en el repositorio de leads
-            self.lead_repo.create_lead(lead)
-            created_leads.append(lead)
+            lead_id = str(uuid4())
 
-        return created_leads
+            self.lead_repo.create_lead(lead, lead_id)
+
+            logging.info(f"Lead created with ID: {lead_id}")
+
+        return leads_created

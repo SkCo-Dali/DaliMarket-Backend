@@ -8,9 +8,8 @@ from core.exceptions import ConnectionErrorException
 class SqlServerAdapter:
     def __init__(self):
         try:
-            driver = "{ODBC Driver 17 for SQL Server}"
             self.connection_string = (
-                f"DRIVER={driver};"
+                f"DRIVER={settings.SQL_DRIVER};"
                 f"SERVER={settings.SQL_SERVER};"
                 f"DATABASE={settings.SQL_DATABASE};"
                 f"UID={settings.SQL_USERNAME};"

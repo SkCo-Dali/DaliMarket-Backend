@@ -1,33 +1,29 @@
-# infrastructure/adapters/sql_server.py
+# infrastructure/adapters/sql_server_adapter.py
 import logging
 import pyodbc
 from core.settings import settings
 from core.exceptions import ConnectionErrorException
 
-
 class SqlServerAdapter:
     def __init__(self):
+        self.connection_string = (
+            f"DRIVER={settings.SQL_DRIVER};"
+            f"SERVER={settings.SQL_SERVER};"
+            f"DATABASE={settings.SQL_DATABASE};"
+            f"UID={settings.SQL_USERNAME};"
+            f"PWD={settings.SQL_PASSWORD};"
+        )
+
+    def get_connection(self):
         try:
-            self.connection_string = (
-                f"DRIVER={settings.SQL_DRIVER};"
-                f"SERVER={settings.SQL_SERVER};"
-                f"DATABASE={settings.SQL_DATABASE};"
-                f"UID={settings.SQL_USERNAME};"
-                f"PWD={settings.SQL_PASSWORD};"
-            )
-            self.conn = pyodbc.connect(self.connection_string)
+            return pyodbc.connect(self.connection_string)
         except Exception as e:
             logging.error(f"Error al conectar con SQL Server: {str(e)}")
             raise ConnectionErrorException("No se pudo establecer conexión con SQL Server.")
 
-    def get_cursor(self):
-        return self.conn.cursor()
-
     def execute_query(self, query: str, params: tuple = None, fetchone=False, fetchall=False):
-        """
-        Ejecuta un query en la base de datos SQL Server.
-        """
-        cursor = self.get_cursor()
+        conn = self.get_connection()
+        cursor = conn.cursor()
         try:
             if params:
                 cursor.execute(query, params)
@@ -41,20 +37,11 @@ class SqlServerAdapter:
             else:
                 result = None
 
-            self.conn.commit()
+            conn.commit()
             return result
         finally:
             cursor.close()
-
-    def close(self):
-        if self.conn:
-            self.conn.close()
-            self.conn = None
-
+            conn.close()
 
 def get_sql_server_session():
-    db = SqlServerAdapter()
-    try:
-        yield db
-    finally:
-        db.close()
+    return SqlServerAdapter()

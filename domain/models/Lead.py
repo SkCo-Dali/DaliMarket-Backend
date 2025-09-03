@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 class Lead(BaseModel):
     CreatedBy: str
     name: str
-    email: EmailStr | None = None
+    email: str | None = None # Corregir
     phone: str | None = None
     documentNumber: int | None = None
     company: str | None = None
@@ -26,18 +26,3 @@ class Lead(BaseModel):
     Gender: str | None = None
     PreferredContactChannel: str | None = None
     AdditionalInfo: Optional[Dict[str, Any]] = None
-
-    @field_validator("name")
-    def name_must_not_be_empty(cls, v):
-        if not v.strip():
-            raise ValueError("El nombre no puede estar vacío")
-        return v
-
-
-    @field_validator("priority")
-    def validate_priority(cls, v):
-        allowed_priorities = ['Baja', 'Media', 'Alta', 'Urgente']
-        if v not in allowed_priorities:
-            raise ValueError(f"La prioridad '{v}' no es válida.")
-        return v
-

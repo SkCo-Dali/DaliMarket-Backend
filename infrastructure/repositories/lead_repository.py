@@ -1,4 +1,4 @@
-# repositories/lead_repository.py
+# infrastructure/repositories/lead_repository.py
 import json
 from domain.models.lead import Lead
 from infrastructure.adapters.sql_server_adapter import SqlServerAdapter
@@ -13,7 +13,6 @@ class LeadRepository:
         """
         Inserta un lead en SQL Server en las tablas Leads y LeadsRaw.
         """
-
         try:
             # Serializar campos JSON
             product_json = json.dumps(lead.product) if lead.product else None

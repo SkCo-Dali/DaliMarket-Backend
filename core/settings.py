@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     SQL_DATABASE: str
     SQL_USERNAME: str
     SQL_PASSWORD: str
+    AZURE_TENANT_ID: str
+    AZURE_CLIENT_ID: str
     model_config = SettingsConfigDict(env_file=".env")
 
 

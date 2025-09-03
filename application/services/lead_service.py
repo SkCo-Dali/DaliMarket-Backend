@@ -71,4 +71,6 @@ class LeadService:
 
             logging.info(f"Lead created with ID: {lead_id}")
 
+            leads_created.append(lead)
+
         return leads_created

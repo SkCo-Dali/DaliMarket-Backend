@@ -1,4 +1,9 @@
 # presentation/main.py
+"""Punto de entrada principal de la aplicación FastAPI.
+
+Este módulo inicializa la aplicación FastAPI, configura el logging,
+y registra los routers para los diferentes endpoints de la API.
+"""
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 

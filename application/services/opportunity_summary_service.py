@@ -6,17 +6,55 @@ from domain.models.opportunity_detail import OpportunityDetail
 from domain.models.opportunity_summary import OpportunitySummary
 
 class OpportunitySummaryService:
+    """Servicio para generar resúmenes de oportunidades.
+
+    Este servicio combina datos de los repositorios de detalles y leads de
+    oportunidades para crear una vista resumida.
+    """
     def __init__(self, opportunity_detail_repository: OpportunityDetailRepositoryPort, opportunity_leads_repository: OpportunityLeadsRepositoryPort):
+        """Inicializa el servicio de resumen de oportunidades.
+
+        Args:
+            opportunity_detail_repository (OpportunityDetailRepositoryPort): El repositorio
+                para acceder a los detalles de las oportunidades.
+            opportunity_leads_repository (OpportunityLeadsRepositoryPort): El repositorio
+                para acceder a los leads de las oportunidades.
+        """
         self.opportunity_detail_repository = opportunity_detail_repository
         self.opportunity_leads_repository = opportunity_leads_repository
 
     def list_details(self) -> List[OpportunityDetail]:
-        return self.repository.get_all()
+        """Obtiene una lista de todos los detalles de oportunidades.
+
+        Returns:
+            List[OpportunityDetail]: Una lista de detalles de oportunidades.
+        """
+        return self.opportunity_detail_repository.get_all()
     
     def get_detail_by_opportunity_id(self, opportunity_id: str) -> Optional[OpportunityDetail]:
-        return self.repository.get_by_opportunity_id(opportunity_id)
+        """Obtiene el detalle de una oportunidad por su ID.
+
+        Args:
+            opportunity_id (str): El ID de la oportunidad a buscar.
+
+        Returns:
+            Optional[OpportunityDetail]: El detalle de la oportunidad si se encuentra,
+                                         de lo contrario None.
+        """
+        return self.opportunity_detail_repository.get_by_opportunity_id(opportunity_id)
     
     def list_opportunity_summary_by_agte_id(self, agte_id: str) -> List[OpportunitySummary]:
+        """Genera una lista de resúmenes de oportunidades para un agente específico.
+
+        Combina la información de leads y detalles para crear un resumen
+        de cada oportunidad asignada a un agente.
+
+        Args:
+            agte_id (str): El ID del agente.
+
+        Returns:
+            List[OpportunitySummary]: Una lista de resúmenes de oportunidades.
+        """
         opportunities_leads = self.opportunity_leads_repository.get_by_agte_id(agte_id)
         summaries = []
         for opportunity_lead in opportunities_leads:

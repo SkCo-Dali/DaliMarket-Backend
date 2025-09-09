@@ -9,14 +9,32 @@ from domain.models.opportunity_detail import OpportunityDetail
 
 
 class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
+    """Adaptador de repositorio para detalles de oportunidades en Cosmos DB.
+
+    Implementa la interfaz `OpportunityDetailRepositoryPort` para interactuar
+    específicamente con una base de datos Cosmos DB.
+    """
     def __init__(self, session: CosmosSession):
+        """Inicializa el repositorio de detalles de oportunidades.
+
+        Args:
+            session (CosmosSession): La sesión de Cosmos DB a utilizar para
+                                     la conexión y operaciones.
+        """
         self.container = session.get_container(
             settings.COSMOS_OPPORTUNITY_DETAIL_CONTAINER,
             settings.COSMOS_OPPORTUNITY_DETAIL_PARTITION_KEY
         )
 
     def _map_to_domain(self, doc: dict) -> OpportunityDetail:
-        """Convierte un documento de Cosmos en un modelo de dominio."""
+        """Convierte un documento de Cosmos DB a un modelo de dominio `OpportunityDetail`.
+
+        Args:
+            doc (dict): El documento de Cosmos DB.
+
+        Returns:
+            OpportunityDetail: El objeto de dominio mapeado.
+        """
         return OpportunityDetail(
             OpportunityId=doc["OpportunityId"],
             Title=doc["Title"],
@@ -28,6 +46,14 @@ class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
         )
 
     def get_all(self) -> List[OpportunityDetail]:
+        """Obtiene todos los detalles de oportunidades de la base de datos.
+
+        Returns:
+            List[OpportunityDetail]: Una lista de todos los detalles de oportunidades.
+
+        Raises:
+            ConnectionErrorException: Si ocurre un error al consultar la base de datos.
+        """
         try:
             query = "SELECT * FROM c"
             items = list(self.container.query_items(query=query, enable_cross_partition_query=True))
@@ -37,6 +63,18 @@ class OpportunityDetailRepository(OpportunityDetailRepositoryPort):
             raise ConnectionErrorException("No se pudieron consultar los Details.")
 
     def get_by_opportunity_id(self, opportunity_id: int) -> Optional[OpportunityDetail]:
+        """Obtiene el detalle de una oportunidad por su ID de la base de datos.
+
+        Args:
+            opportunity_id (int): El ID de la oportunidad a buscar.
+
+        Returns:
+            Optional[OpportunityDetail]: El detalle de la oportunidad si se encuentra,
+                                         de lo contrario None.
+
+        Raises:
+            ConnectionErrorException: Si ocurre un error al consultar la base de datos.
+        """
         try:
             query = "SELECT * FROM c WHERE c.OpportunityId=@id"
             parameters = [{"name": "@id", "value": opportunity_id}]

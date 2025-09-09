@@ -5,10 +5,6 @@ from uvicorn.logging import DefaultFormatter
 
 
 class LogLevels(StrEnum):
-    """Define los niveles de log permitidos.
-
-    Hereda de StrEnum para que los miembros sean cadenas de texto.
-    """
     info = "INFO"
     warn = "WARNING"
     error = "ERROR"
@@ -16,15 +12,6 @@ class LogLevels(StrEnum):
 
 
 def configure_logging(log_level: str = LogLevels.error):
-    """Configura el sistema de logging para la aplicación.
-
-    Establece el nivel de log, el formato y el manejador para los logs.
-
-    Args:
-        log_level (str): El nivel de log a configurar.
-                         Debe ser uno de los valores definidos en LogLevels.
-                         Por defecto es 'ERROR'.
-    """
     log_level = str(log_level).upper()
     valid_levels = [level.value for level in LogLevels]
 

@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from core.logging_config import LogLevels, configure_logging
-from presentation.routers import opportunity_detail_router, opportunity_leads_router, opportunity_summary_router, lead_router, secure_router
+from presentation.routers import opportunity_detail_router, opportunity_leads_router, opportunity_summary_router, lead_router
 
 configure_logging(LogLevels.info)
 
@@ -17,4 +17,3 @@ app.include_router(opportunity_leads_router.router)
 app.include_router(opportunity_detail_router.router)
 app.include_router(opportunity_summary_router.router)
 app.include_router(lead_router.router)
-app.include_router(secure_router.router)  # Uncomment this line to include the secure router

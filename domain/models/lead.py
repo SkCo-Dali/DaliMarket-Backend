@@ -1,5 +1,5 @@
 from typing import Any, Optional, Dict
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, field_validator
 
 
 class Lead(BaseModel):

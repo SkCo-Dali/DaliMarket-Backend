@@ -6,5 +6,13 @@ pytest
 azure-cosmos
 pyodbc
 sqlalchemy
-jwt
 PyJWT
+python-dotenv
+pandas
+openpyxl
+langchain
+langchain-openai
+openai
+email_validator
+msal
+azure-identity

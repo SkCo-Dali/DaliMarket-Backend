@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     COSMOS_OPPORTUNITY_LEADS_PARTITION_KEY: str
     COSMOS_OPPORTUNITY_DETAIL_CONTAINER: str
     COSMOS_OPPORTUNITY_DETAIL_PARTITION_KEY: str
+    SQL_DRIVER: str
+    SQL_SERVER: str
+    SQL_DATABASE: str
+    SQL_USERNAME: str
+    SQL_PASSWORD: str
+    AZURE_TENANT_ID: str
+    AZURE_CLIENT_ID: str
     model_config = SettingsConfigDict(env_file=".env")
 
 

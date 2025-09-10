@@ -6,4 +6,4 @@ pytest
 azure-cosmos
 pyodbc
 sqlalchemy
-PyJWT[crypto]
+PyJWT[crypto]>=2.6.0

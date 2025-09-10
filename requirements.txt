@@ -1,10 +1,22 @@
-uvicorn[standard]
-fastapi[all]
-pydantic
-pydantic-settings
-pytest
-azure-cosmos
-pyodbc
-sqlalchemy
-jwt
-PyJWT
+# Core framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# Database
+pyodbc==5.1.0
+
+# Auth / JWT
+PyJWT[crypto]==2.8.0
+
+# Azure SDKs (si usas auth o storage)
+azure-identity==1.17.1
+azure-keyvault-secrets==4.7.0
+azure-storage-blob==12.19.1
+
+# Utils
+pydantic==2.9.2
+python-dotenv==1.0.1
+requests==2.32.3
+
+# Opcional: si usas testing
+pytest==8.3.3

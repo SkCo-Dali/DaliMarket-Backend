@@ -17,10 +17,9 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
 
     def _map_to_domain(self, doc: dict) -> OpportunityLeads:
         """Convierte un documento de Cosmos en un modelo de dominio."""
-        leads = [OpportunityLead(**l) for l in doc.get("leads", [])]
+        leads = [OpportunityLead(**l["lead"]) for l in doc.get("leads", [])]
 
         return OpportunityLeads(
-            id=doc.get("id"),
             OpportunityId=doc["OpportunityId"],
             Beggining=doc["Beggining"],
             End=doc["End"],
@@ -32,21 +31,6 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
             leads=leads,
         )
 
-    def _map_to_document(self, opportunity_lead: OpportunityLeads) -> dict:
-        """Convierte un modelo de dominio a un documento de Cosmos."""
-        return {
-            "id": opportunity_lead.id,
-            "OpportunityId": opportunity_lead.OpportunityId,
-            "Beggining": opportunity_lead.Beggining,
-            "End": opportunity_lead.End,
-            "IdAgte": opportunity_lead.IdAgte,
-            "IdSociedad": opportunity_lead.IdSociedad,
-            "WSaler": opportunity_lead.WSaler,
-            "Status": opportunity_lead.Status,
-            "Priority": opportunity_lead.Priority,
-            "leads": [lead.dict() for lead in opportunity_lead.leads],
-        }
-
     def get_all(self) -> List[OpportunityLeads]:
         try:
             query = "SELECT * FROM c"
@@ -56,13 +40,10 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
             logging.error(f"Error al consultar Leads: {str(e)}")
             raise ConnectionErrorException("No se pudieron consultar los Leads.")
 
-    def get_by_agte_id(self, agte_id: int, status: Optional[int] = None) -> List[OpportunityLeads]:
+    def get_by_agte_id(self, agte_id: int) -> List[OpportunityLeads]:
         try:
             query = "SELECT * FROM c WHERE c.IdAgte=@agte_id"
             parameters = [{"name": "@agte_id", "value": agte_id}]
-            if status is not None:
-                query += " AND c.Status=@status"
-                parameters.append({"name": "@status", "value": status})
             items = list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
             return [self._map_to_domain(doc) for doc in items]
         except Exception as e:
@@ -88,11 +69,3 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
             return None
 
         return self._map_to_domain(items[0])
-
-    def update(self, opportunity_lead: OpportunityLeads) -> None:
-        try:
-            document = self._map_to_document(opportunity_lead)
-            self.container.upsert_item(body=document)
-        except Exception as e:
-            logging.error(f"Error al actualizar OpportunityLeads: {str(e)}")
-            raise ConnectionErrorException("No se pudo actualizar el OpportunityLeads.")

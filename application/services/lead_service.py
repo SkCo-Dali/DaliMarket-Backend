@@ -28,10 +28,6 @@ class LeadService:
         opportunity = self.opportunity_leads_repo.get_by_opportunity_id_and_agte(
             opportunity_id, id_agte)
         
-        if not opportunity:
-            logging.warning(f"Opportunity with ID {opportunity_id} and AGTE {id_agte} not found.")
-            return []
-
         current_user = self.auth.get_current_user(token)
         email = current_user["email"]
 
@@ -76,8 +72,5 @@ class LeadService:
             logging.info(f"Lead created with ID: {lead_id}")
 
             leads_created.append(lead)
-
-        opportunity.Status = 0
-        self.opportunity_leads_repo.update(opportunity)
 
         return leads_created

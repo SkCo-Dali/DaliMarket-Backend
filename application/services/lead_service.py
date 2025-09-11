@@ -4,7 +4,7 @@ from application.ports.auth_port import AuthPort
 from application.ports.lead_repository_port import LeadRepositoryPort
 from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
 from application.ports.user_repository_port import UserRepositoryPort
-from domain.models.lead_ import Lead
+from domain.models.lead import Lead
 
 
 class LeadService:

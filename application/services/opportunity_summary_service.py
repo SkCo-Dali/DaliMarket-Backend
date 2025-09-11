@@ -17,7 +17,7 @@ class OpportunitySummaryService:
         return self.repository.get_by_opportunity_id(opportunity_id)
     
     def list_opportunity_summary_by_agte_id(self, agte_id: str) -> List[OpportunitySummary]:
-        opportunities_leads = self.opportunity_leads_repository.get_by_agte_id(agte_id, status=1)
+        opportunities_leads = self.opportunity_leads_repository.get_by_agte_id(agte_id)
         summaries = []
         for opportunity_lead in opportunities_leads:
             opportunity_id = opportunity_lead.OpportunityId

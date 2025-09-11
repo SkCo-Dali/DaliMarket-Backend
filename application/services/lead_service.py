@@ -4,7 +4,7 @@ from application.ports.auth_port import AuthPort
 from application.ports.lead_repository_port import LeadRepositoryPort
 from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
 from application.ports.user_repository_port import UserRepositoryPort
-from domain.models.lead_ import Lead
+from domain.models.lead import Lead
 
 
 class LeadService:
@@ -28,10 +28,6 @@ class LeadService:
         opportunity = self.opportunity_leads_repo.get_by_opportunity_id_and_agte(
             opportunity_id, id_agte)
         
-        if not opportunity:
-            logging.warning(f"Opportunity with ID {opportunity_id} and AGTE {id_agte} not found.")
-            return []
-
         current_user = self.auth.get_current_user(token)
         email = current_user["email"]
 

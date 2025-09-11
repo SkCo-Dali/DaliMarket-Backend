@@ -19,3 +19,8 @@ class OpportunityLeadsRepositoryPort(ABC):
     def get_by_opportunity_id_and_agte(self, opportunity_id: int, id_agte: int) -> Optional[OpportunityLeads]:
         """Obtiene un OpportunityLeads desde el repositorio por opportunity_id y idAgte"""
         pass
+
+    @abstractmethod
+    def update(self, opportunity_lead: OpportunityLeads) -> None:
+        """Actualiza un lead de oportunidad en el repositorio."""
+        pass

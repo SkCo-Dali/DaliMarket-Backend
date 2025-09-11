@@ -73,4 +73,7 @@ class LeadService:
 
             leads_created.append(lead)
 
+        opportunity.Status = 0
+        self.opportunity_leads_repo.update(opportunity)
+
         return leads_created

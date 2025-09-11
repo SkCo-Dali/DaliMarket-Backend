@@ -20,6 +20,7 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
         leads = [OpportunityLead(**l["lead"]) for l in doc.get("leads", [])]
 
         return OpportunityLeads(
+            id=doc.get("id"),
             OpportunityId=doc["OpportunityId"],
             Beggining=doc["Beggining"],
             End=doc["End"],
@@ -30,6 +31,21 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
             Priority=doc["Priority"],
             leads=leads,
         )
+
+    def _map_to_document(self, opportunity_lead: OpportunityLeads) -> dict:
+        """Convierte un modelo de dominio en un documento de Cosmos."""
+        doc = opportunity_lead.model_dump()
+        # Pydantic V2 uses model_dump, V1 uses dict
+        # doc = opportunity_lead.dict()
+        return doc
+
+    def update(self, opportunity_lead: OpportunityLeads) -> None:
+        try:
+            doc = self._map_to_document(opportunity_lead)
+            self.container.upsert_item(body=doc)
+        except Exception as e:
+            logging.error(f"Error al actualizar OpportunityLead: {str(e)}")
+            raise ConnectionErrorException("No se pudo actualizar el OpportunityLead.")
 
     def get_all(self) -> List[OpportunityLeads]:
         try:
@@ -42,7 +58,7 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
 
     def get_by_agte_id(self, agte_id: int) -> List[OpportunityLeads]:
         try:
-            query = "SELECT * FROM c WHERE c.IdAgte=@agte_id"
+            query = "SELECT * FROM c WHERE c.IdAgte=@agte_id AND c.Status = 1"
             parameters = [{"name": "@agte_id", "value": agte_id}]
             items = list(self.container.query_items(query=query, parameters=parameters, enable_cross_partition_query=True))
             return [self._map_to_domain(doc) for doc in items]

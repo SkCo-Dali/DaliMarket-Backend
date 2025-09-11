@@ -1,6 +1,6 @@
 # infrastructure/repositories/lead_repository.py
 import json
-from domain.models.lead import Lead
+from domain.models.lead_ import Lead
 from infrastructure.adapters.sql_server_adapter import SqlServerAdapter
 from fastapi import HTTPException
 

@@ -12,7 +12,7 @@ class OpportunityLeadsRepositoryPort(ABC):
         pass
 
     @abstractmethod
-    def get_by_agte_id(self, agte_id: int) -> List[OpportunityLeads]:
+    def get_by_agte_id(self, agte_id: int, status: Optional[int] = None) -> List[OpportunityLeads]:
         pass
 
     @abstractmethod
@@ -22,5 +22,5 @@ class OpportunityLeadsRepositoryPort(ABC):
 
     @abstractmethod
     def update(self, opportunity_lead: OpportunityLeads) -> None:
-        """Actualiza un lead de oportunidad en el repositorio."""
+        """Actualiza un OpportunityLeads en el repositorio."""
         pass

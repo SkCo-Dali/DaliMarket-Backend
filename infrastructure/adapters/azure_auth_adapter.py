@@ -2,6 +2,7 @@
 import jwt
 from jwt import PyJWKClient
 from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from core.settings import settings
 from application.ports.auth_port import AuthPort
 

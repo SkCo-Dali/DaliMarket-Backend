@@ -4,7 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List
 
 from application.services.lead_service import LeadService
-from domain.models.lead import Lead
+from domain.models.lead_ import Lead
 from infrastructure.adapters.sql_server_adapter import SqlServerAdapter, get_sql_server_session
 from infrastructure.adapters.cosmos_adapter import CosmosAdapter, get_cosmos_session
 from infrastructure.adapters.azure_auth_adapter import AzureAuthAdapter

@@ -20,18 +20,16 @@ class LeadService:
         self.user_repo = user_repo
         self.auth = auth
 
-    def create_leads_from_opportunity(
-            self, opportunity_id: int, 
-            id_agte: int,
-            token: str
-    ):
-        opportunity = self.opportunity_leads_repo.get_by_opportunity_id_and_agte(
-            opportunity_id, id_agte)
-        
+    def create_leads_from_opportunity(self, opportunity_id: int, token: str):
         current_user = self.auth.get_current_user(token)
         email = current_user["email"]
+        user = self.user_repo.get_user_by_email(email)
 
-        created_by = self.user_repo.get_id_by_email(email)
+        opportunity = self.opportunity_leads_repo.get_by_opportunity_id_and_agte(
+            opportunity_id, user.id_agte
+        )
+
+        created_by = user.id
 
         leads_created = []
 

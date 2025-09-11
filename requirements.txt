@@ -6,13 +6,4 @@ pytest
 azure-cosmos
 pyodbc
 sqlalchemy
-PyJWT
-python-dotenv
-pandas
-openpyxl
-langchain
-langchain-openai
-openai
-email_validator
-msal
-azure-identity
+PyJWT[crypto]>=2.6.0

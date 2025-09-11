@@ -1,6 +1,6 @@
 # application/ports/lead_repository_port.py
 from abc import ABC, abstractmethod
-from domain.models.lead_ import Lead
+from domain.models.lead import Lead
 
 
 class LeadRepositoryPort(ABC):

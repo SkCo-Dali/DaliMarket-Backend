@@ -22,12 +22,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
-      - name: Install ODBC dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y unixodbc-dev
+          python-version: '3.13'
 
       - name: Create and start virtual environment
         run: |
@@ -63,6 +58,4 @@ jobs:
         with:
           app-name: 'skcoMarketDali'
           slot-name: 'Production'
-
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_63077E4190E74C33AE8E070711D66D9F }}
-

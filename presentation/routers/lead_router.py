@@ -38,7 +38,6 @@ def get_lead_service(
 @router.post("/from-opportunity", response_model=List[Lead])
 def create_leads_from_opportunity(
     opportunity_id: int,
-    id_agte: int,
     credentials: HTTPAuthorizationCredentials = Depends(security),
     service: LeadService = Depends(get_lead_service),
 ):
@@ -48,7 +47,7 @@ def create_leads_from_opportunity(
     """
     try:
         token = credentials.credentials
-        leads = service.create_leads_from_opportunity(opportunity_id, id_agte, token)
+        leads = service.create_leads_from_opportunity(opportunity_id, token)
         return leads
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -8,3 +8,7 @@ class UserRepositoryPort(ABC):
         """Obtiene un usuario por su correo electrónico"""
         pass
 
+    def get_id_agte_by_email(self, email: str) -> int:
+        """Obtiene el idAgte de un usuario por su correo electrónico"""
+        pass
+

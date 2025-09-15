@@ -9,6 +9,7 @@ from infrastructure.adapters.sql_server_adapter import SqlServerAdapter, get_sql
 from infrastructure.adapters.cosmos_adapter import CosmosAdapter, get_cosmos_session
 from infrastructure.adapters.azure_auth_adapter import AzureAuthAdapter
 from infrastructure.repositories.opportunity_leads_repository import OpportunityLeadsRepository
+from infrastructure.repositories.log_repository import LogRepository
 from infrastructure.repositories.lead_repository import LeadRepository
 from infrastructure.repositories.user_repository import UserRepository
 
@@ -29,10 +30,13 @@ def get_lead_service(
     # Repositorio de Users
     user_repo = UserRepository(sql)
 
+    # Repositorio para Logs
+    log_repo = LogRepository(cosmos)
+
     # Adaptador de autenticación (AuthPort implementation)
     auth_adapter = AzureAuthAdapter()
 
-    return LeadService(lead_repo, opportunity_leads_repo, user_repo, auth_adapter)
+    return LeadService(lead_repo, opportunity_leads_repo, user_repo, log_repo, auth_adapter)
 
 
 @router.post("/from-opportunity", response_model=List[Lead])

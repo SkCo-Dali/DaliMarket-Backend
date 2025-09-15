@@ -2,9 +2,11 @@ import logging
 from uuid import uuid4
 from application.ports.auth_port import AuthPort
 from application.ports.lead_repository_port import LeadRepositoryPort
+from application.ports.log_repository_port import LogRepositoryPort
 from application.ports.opportunity_leads_repository_port import OpportunityLeadsRepositoryPort
 from application.ports.user_repository_port import UserRepositoryPort
 from domain.models.lead import Lead
+from domain.models.log import Log
 
 
 class LeadService:
@@ -12,12 +14,14 @@ class LeadService:
             self, 
             lead_repo: LeadRepositoryPort, 
             opportunity_leads_repo: OpportunityLeadsRepositoryPort, 
-            user_repo: UserRepositoryPort, 
+            user_repo: UserRepositoryPort,
+            log_repo: LogRepositoryPort,
             auth: AuthPort
     ):
         self.lead_repo = lead_repo
         self.opportunity_leads_repo = opportunity_leads_repo
         self.user_repo = user_repo
+        self.log_repo = log_repo
         self.auth = auth
 
     def create_leads_from_opportunity(self, opportunity_id: int, token: str):
@@ -73,5 +77,14 @@ class LeadService:
 
         opportunity.Status = 0
         self.opportunity_leads_repo.update(opportunity)
+
+        # Guardar log
+        log_entry = Log(
+            id=str(uuid4()),
+            user_id=user.id,
+            user_email=email,
+            opportunity_id=opportunity_id
+        )
+        self.log_repo.save(log_entry)
 
         return leads_created

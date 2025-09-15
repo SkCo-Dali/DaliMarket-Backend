@@ -17,7 +17,8 @@ class OpportunityLeadsRepository(OpportunityLeadsRepositoryPort):
 
     def _map_to_domain(self, doc: dict) -> OpportunityLeads:
         """Convierte un documento de Cosmos en un modelo de dominio."""
-        leads = [OpportunityLead(**l["lead"]) for l in doc.get("leads", [])]
+        leads_data = doc.get("leads", [])
+        leads = [OpportunityLead(**(l.get('lead', l))) for l in leads_data]
 
         return OpportunityLeads(
             id=doc.get("id"),

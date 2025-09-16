@@ -2,8 +2,8 @@
 set -e
 
 # Instalar dependencias de SQL Server
-apt-get update
-apt-get install -y msodbcsql17 unixodbc-dev
+export ACCEPT_EULA=Y
+apt-get update && apt-get install -y msodbcsql17 unixodbc-dev
 
 pip install -r requirements.txt
 
